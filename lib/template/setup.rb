@@ -16,6 +16,10 @@ Frank.server.port = "3601"
 #  directly, without interpretation
 #
 Frank.static_folder = "static"
+#
+# Anything matching these will not be exported
+#
+# Frank.static_ignore = [ /^.git$/ ]
 
 # ----------------------
 #  Dynamic folder:
