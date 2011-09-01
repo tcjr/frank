@@ -1,23 +1,23 @@
 module Frank
   class Utils
+    # recursively copy src to dest, skipping anything matching any ignore
+    # e.g.:  cp_with_ignore('/from', '/to', [ ".hidden" ])
+    #        cp_with_ignore('/from', '/to', [ /^.git$/ ])  # will skip .git folder. useful for submodules
     def self.cp_with_ignore(src, dest, ignore)
-      
+
       Dir.foreach(src) do |file|
         next if (file=='.' || file=='..')
         
-        if ignore.any? {|ig| file.match(ig) }
-          puts "ignoring #{file}"
+        next if ignore.any? { |ig| file.match(ig) }
+        
+        s = File.join(src, file)
+        d = File.join(dest, file)
+        
+        if File.directory?(s)
+          FileUtils.mkdir(d)
+          self.cp_with_ignore(s, d, ignore)
         else
-          s = File.join(src, file)
-          d = File.join(dest, file)
-          if File.directory?(s)
-            FileUtils.mkdir(d)
-            #puts "make dir #{d}"
-            self.cp_with_ignore(s, d, ignore)
-          else
-            #puts "copying #{file}"
-            FileUtils.cp(s, d)
-          end
+          FileUtils.cp(s, d)
         end
         
       end
