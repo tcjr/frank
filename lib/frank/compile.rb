@@ -1,4 +1,30 @@
 module Frank
+  class Utils
+    def self.cp_with_ignore(src, dest, ignore)
+      
+      Dir.foreach(src) do |file|
+        next if (file=='.' || file=='..')
+        
+        if ignore.any? {|ig| file.match(ig) }
+          puts "ignoring #{file}"
+        else
+          s = File.join(src, file)
+          d = File.join(dest, file)
+          if File.directory?(s)
+            FileUtils.mkdir(d)
+            #puts "make dir #{d}"
+            self.cp_with_ignore(s, d, ignore)
+          else
+            #puts "copying #{file}"
+            FileUtils.cp(s, d)
+          end
+        end
+        
+      end
+      
+    end
+  end
+  
   class Compile < Frank::Base
 
     class << self
@@ -41,7 +67,8 @@ module Frank
       def copy_static
         puts " - \033[32mCopying\033[0m static content" unless Frank.silent_export?
         static_folder = File.join(Frank.root, Frank.static_folder)
-        FileUtils.cp_r(File.join(static_folder, '/.'), Frank.export.path)
+        #FileUtils.cp_r(File.join(static_folder, '/.'), Frank.export.path)
+        Frank::Utils.cp_with_ignore(static_folder, Frank.export.path, Frank.static_ignore)
       end
       
       # ask the user if they want to overwrite the folder

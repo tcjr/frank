@@ -10,6 +10,7 @@ module Frank
     attr_accessor :server
     attr_accessor :options
     attr_accessor :static_folder
+    attr_accessor :static_ignore
     attr_accessor :dynamic_folder
     attr_accessor :layouts_folder
     attr_accessor :export
@@ -46,6 +47,7 @@ module Frank
 
       # setup folders
       @static_folder = "static"
+      @static_ignore = []
       @dynamic_folder = "dynamic"
       @layouts_folder = "layouts"
 
